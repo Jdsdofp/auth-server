@@ -44,7 +44,7 @@ app.get('/get-admin-token', (req, res) => {
     JWT_SECRET
   );
 
-  console.warn()
+  console.warn('Return token: ', token)
 
   res.json({ token });
 });
