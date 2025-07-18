@@ -10,7 +10,7 @@ app.use(cors());
 const PORT = process.env.PORT || 4000;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// 🔐 Endpoint para gerar token manualmente
+
 app.post('/generate-token', (req, res) => {
   const { email, password, role } = req.body;
 
@@ -25,15 +25,15 @@ app.post('/generate-token', (req, res) => {
 
 
 
-// Usuário fixo
+
 const FIXED_USER = {
   email: 'admin@grafana.local',
   username: 'admin',
   password: 'admin12345',
-  role: 'Admin'
+  role: 'View'
 };
 
-// Endpoint padrão para gerar token fixo do admin
+
 app.get('/get-admin-token', (req, res) => {
   const token = jwt.sign(
     {
@@ -44,12 +44,13 @@ app.get('/get-admin-token', (req, res) => {
     JWT_SECRET
   );
 
+  console.warn()
+
   res.json({ token });
 });
 
 
 
-// 🔍 Endpoint que o Grafana vai chamar
 app.get('/userinfo', (req, res) => {
   const authHeader = req.headers.authorization;
 
@@ -62,7 +63,6 @@ app.get('/userinfo', (req, res) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // Estrutura esperada pelo Grafana
     res.json({
       email: decoded.email,
       login: decoded.login,
