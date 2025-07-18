@@ -30,7 +30,7 @@ const FIXED_USER = {
   email: 'admin@grafana.local',
   username: 'admin',
   password: 'admin12345',
-  role: 'View'
+  role: 'Admin'
 };
 
 
