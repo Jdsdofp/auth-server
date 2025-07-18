@@ -29,7 +29,7 @@ app.post('/generate-token', (req, res) => {
 const FIXED_USER = {
   email: 'admin@grafana.local',
   username: 'admin',
-  password: 'admin1234',
+  password: 'admin12345',
   role: 'View'
 };
 
