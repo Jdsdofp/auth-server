@@ -96,6 +96,37 @@ app.get('/get-admin-token', (req, res) => {
 });
 
 
+app.get('/authorize', (req, res) => {
+  const { redirect_uri, state } = req.query;
+
+  res.send(`
+    <form method="POST" action="/login?redirect_uri=${encodeURIComponent(redirect_uri)}&state=${state}">
+      <input name="username" placeholder="Username" />
+      <input name="password" placeholder="Password" type="password" />
+      <button type="submit">Login</button>
+    </form>
+  `);
+});
+
+app.post('/login', express.urlencoded({ extended: true }), (req, res) => {
+  const { username, password } = req.body;
+  const { redirect_uri, state } = req.query;
+
+  if (username === 'admin' && password === 'admin12345') {
+    // código gerado fictício
+    const code = 'fixed-code-123';
+
+    // Salvar esse código em memória ou cache, se quiser segurança
+    codeStore[code] = FIXED_USER;
+
+    res.redirect(`${redirect_uri}?code=${code}&state=${state}`);
+  } else {
+    res.status(401).send('Login inválido');
+  }
+});
+
+
+
 app.listen(PORT, () => {
   console.log(`OAuth Server running on http://localhost:${PORT}`);
 });
