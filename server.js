@@ -50,6 +50,9 @@ app.post('/token', (req, res) => {
 app.get('/userinfo', (req, res) => {
   const authHeader = req.headers.authorization;
 
+  console.log('/userinfo ', '\n')
+  console.log('recebido: ', authHeader, '\n')
+
   if (!authHeader?.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Token required' });
   }
@@ -71,6 +74,8 @@ app.get('/userinfo', (req, res) => {
 
 // Para testes: gerar token diretamente (opcional)
 app.get('/get-admin-token', (req, res) => {
+
+  console.log('/get-admin-token ', '\n')
   const token = jwt.sign(
     {
       email: FIXED_USER.email,
@@ -80,6 +85,8 @@ app.get('/get-admin-token', (req, res) => {
     JWT_SECRET,
     { expiresIn: '1h' }
   );
+
+  console.log('token gerado: ', token, '\n')
 
   res.json({
     access_token: token,
