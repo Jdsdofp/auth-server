@@ -10,47 +10,43 @@ app.use(cors());
 const PORT = process.env.PORT || 4000;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-
-app.post('/generate-token', (req, res) => {
-  const { email, password, role } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Missing fields' });
-  }
-
-  const token = jwt.sign({ email, login: password, role }, JWT_SECRET);
-
-  res.json({ token });
-});
-
-
-
-
+// Usuário fixo
 const FIXED_USER = {
-  email: 'admin@grafana.local',
+  email: 'admin',
   username: 'admin',
   password: 'admin12345',
   role: 'Admin'
 };
 
+// Endpoint padrão OAuth2 para o Grafana (Token URL)
+app.post('/token', (req, res) => {
+  const { username, password } = req.body;
 
-app.get('/get-admin-token', (req, res) => {
-  const token = jwt.sign(
-    {
-      email: FIXED_USER.email,
-      login: FIXED_USER.username,
-      role: FIXED_USER.role
-    },
-    JWT_SECRET
-  );
+  if (
+    username === FIXED_USER.username &&
+    password === FIXED_USER.password
+  ) {
+    const token = jwt.sign(
+      {
+        email: FIXED_USER.email,
+        login: FIXED_USER.username,
+        role: FIXED_USER.role
+      },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
-  console.warn('Return token: ', token)
+    return res.json({
+      access_token: token,
+      token_type: 'Bearer',
+      expires_in: 3600
+    });
+  }
 
-  res.json({ token });
+  return res.status(401).json({ error: 'Invalid credentials' });
 });
 
-
-
+// Endpoint de dados do usuário (API URL)
 app.get('/userinfo', (req, res) => {
   const authHeader = req.headers.authorization;
 
@@ -63,15 +59,35 @@ app.get('/userinfo', (req, res) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    res.json({
+    return res.json({
       email: decoded.email,
       login: decoded.login,
-      role: decoded.role || 'Viewer',
+      role: decoded.role || 'Viewer'
     });
   } catch (err) {
-    res.status(403).json({ error: 'Invalid token' });
+    return res.status(403).json({ error: 'Invalid token' });
   }
 });
+
+// Para testes: gerar token diretamente (opcional)
+app.get('/get-admin-token', (req, res) => {
+  const token = jwt.sign(
+    {
+      email: FIXED_USER.email,
+      login: FIXED_USER.username,
+      role: FIXED_USER.role
+    },
+    JWT_SECRET,
+    { expiresIn: '1h' }
+  );
+
+  res.json({
+    access_token: token,
+    token_type: 'Bearer',
+    expires_in: 3600
+  });
+});
+
 
 app.listen(PORT, () => {
   console.log(`OAuth Server running on http://localhost:${PORT}`);
