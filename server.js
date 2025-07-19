@@ -63,9 +63,9 @@ app.get('/userinfo', (req, res) => {
     const decoded = jwt.verify(token, JWT_SECRET);
 
     return res.json({
-      email: decoded.email,
-      login: decoded.login,
-      role: decoded.role || 'Viewer'
+        email: FIXED_USER.email,
+        login: FIXED_USER.username,
+        role: FIXED_USER.role
     });
   } catch (err) {
     return res.status(403).json({ error: 'Invalid token' });
