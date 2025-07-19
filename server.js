@@ -12,7 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // Usuário fixo
 const FIXED_USER = {
-  email: 'admin',
+  email: 'admin@grafana.local',
   username: 'admin',
   password: 'admin12345',
   role: 'Admin'
