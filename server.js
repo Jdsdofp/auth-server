@@ -48,19 +48,10 @@ app.post('/token', (req, res) => {
 
 // Endpoint de dados do usuário (API URL)
 app.get('/userinfo', (req, res) => {
-  const authHeader = req.headers.authorization;
 
   console.log('/userinfo ', '\n')
-  console.log('recebido: ', authHeader, '\n')
-
-  if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Token required' });
-  }
-
-  const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
 
     return res.json({
         email: FIXED_USER.email,
